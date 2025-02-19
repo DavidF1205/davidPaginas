@@ -826,6 +826,10 @@ button {
     z-index: 2;
 }
 
+.videoStyle{
+    border-left: 50px;
+}
+
 .vid_main {
     width: 100%;
     float: left;
