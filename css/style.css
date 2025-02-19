@@ -826,77 +826,13 @@ button {
     z-index: 2;
 }
 
-.vid_main {
+.map_main {
     width: 100%;
     float: left;
     padding-top: 20px;
     padding-right: 20px;
 }
 
-.email_text {
-    width: 100%;
-    float: left;
-    padding: 20px 20px 20px 20px;
-}
-
-.email-bt {
-    width: 100%;
-    float: left;
-    font-size: 18px;
-    color: #2a2a2c;
-    margin-bottom: 20px;
-    padding: 8px 15px;
-    border: 1px solid #909090;
-}
-
-.massage-bt {
-    width: 100%;
-    float: left;
-    font-size: 18px;
-    color: #2a2a2c;
-    margin-bottom: 20px;
-    padding: 40px 15px 8px 15px;
-    border: 1px solid #909090;
-    height: 120px;
-}
-
-.send_btn {
-    width: 170px;
-    float: left;
-}
-
-.send_btn a {
-    width: 100%;
-    float: left;
-    text-align: center;
-    font-size: 20px;
-    color: #ffffff;
-    background-color: #bf3d42;
-    padding: 10px;
-    border-radius: 30px;
-}
-
-.custom-select {
-    display: inline-block;
-    width: 100%;
-    height: calc(50px + 2px);
-    padding: 8px 15px;
-    line-height: 1.5;
-    color: #5d5d5f;
-    vertical-align: middle;
-    font-size: 18px;
-    background: #fff url(../images/drop-arrow.png) no-repeat right .75rem center;
-    background-size: 16px 10px;
-    border: 1px solid #909090;
-    border-radius: 0px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-select.custom-select::placeholder {
-    color: #5d5d5f !important;
-}
 
 .footer_section {
     width: 100%;
