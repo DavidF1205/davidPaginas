@@ -830,7 +830,7 @@ button {
     width: 100%;
     float: left;
     align-items: center;
-    display: flex;
+    display: block;
     justify-content: center; /* Center the content horizontally */
 }
 
