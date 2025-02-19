@@ -275,7 +275,7 @@ button {
     width: 100%;
     float: left;
     font-size: 24px;
-    color: #ffffff;
+    color: #F8F3D9;
     text-transform: uppercase;
     text-align: center;
 }
@@ -284,11 +284,10 @@ button {
     width: 100%;
     float: left;
     font-size: 50px;
-    color: #fffdfd;
+    color: #F8F3D9;
     text-transform: uppercase;
     text-align: center;
     font-weight: bold;
-    font-family: Roboto;
 }
 
 .banner_text {
@@ -296,7 +295,7 @@ button {
     width: 81%;
     margin: 0 auto;
     font-size: 16px;
-    color: #ffffff;
+    color: #F8F3D9;
     text-align: center;
     padding-top: 30px;
     display: block;
