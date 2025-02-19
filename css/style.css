@@ -807,8 +807,8 @@ button {
 
 .contact_section {
     width: 100%;
-    float: left;
-    position: relative;
+    position:fixed;
+    align-items: center;
     display: contents;
     z-index: 1;
 }
