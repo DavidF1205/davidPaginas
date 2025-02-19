@@ -249,6 +249,16 @@ button {
   height: auto;
 }
 
+.icon_3{
+    width: 15%;   /* Reduz para 50% do tamanho original */
+  height: auto;
+}
+
+.icon_4{
+    width: 10%;   /* Reduz para 50% do tamanho original */
+  height: auto;
+}
+
 .bg-dark {
     background-color: transparent !important;
 }
