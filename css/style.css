@@ -1123,11 +1123,9 @@ button {
     margin-top: -200px;
 }
 
-.form-containerHome{
-    height: 150px;
+.formContainerHome{
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    margin-top: 400px;
 }
