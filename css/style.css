@@ -685,6 +685,7 @@ button {
     border: 2px solid #acacac;
     border-radius: 15px;
     padding: 20px;
+    height: 400px; /* Increase the height of the box */
 }
 
 .basic_text {
@@ -1053,6 +1054,7 @@ button {
     max-width: 100%;
     background: #FFF;
     border: 0;
+    height: 100%; /* Ensure the video takes up the full height of the box */
 }
 
 .instagram_video iframe,
