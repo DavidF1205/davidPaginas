@@ -756,8 +756,8 @@ button {
 
 .image_7 {
     width: 100%;
-    float: left;
     text-align: center;
+    align-items: center;
     display: inline-block;
     margin-top: 50px;
 }
@@ -1065,4 +1065,69 @@ button {
     width: 100%;
     height: 100%;
     border: 0;
+}
+
+.form {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 300px;
+}
+
+
+/* Form title */
+.h2Form {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+/* Email input */
+.inputFom[type="email"] {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Subscribe button */
+.buttonEmail {
+    background: #bf3d42;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease;
+}
+
+.buttonEmail:hover {
+    background: #252525;
+}
+
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: -200px;
+}
+
+.form-containerHome{
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 400px;
 }
