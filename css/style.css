@@ -856,7 +856,7 @@ button {
 .vid-responsive {
     width: 100%;
     max-width: 600px; /* Set a max-width for the iframe */
-    margin: 0 auto; /* Center the iframe horizontally */
+    margin: 0; /* Center the iframe horizontally */
     position: relative;
     padding-bottom: 56.25%; /* 16:9 aspect ratio */
     height: 0;
