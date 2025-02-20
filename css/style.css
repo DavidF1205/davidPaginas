@@ -250,12 +250,12 @@ button {
 }
 
 .icon_3{
-    width: 15%;   /* Reduz para 50% do tamanho original */
+    width: 8%;   /* Reduz para 50% do tamanho original */
   height: auto;
 }
 
 .icon_4{
-    width: 5%;   /* Reduz para 50% do tamanho original */
+    width: 10%;   /* Reduz para 50% do tamanho original */
   height: auto;
 }
 
@@ -618,7 +618,7 @@ button {
     float: left;
     border: 2px solid #ffffff;
     height: auto;
-    padding: 60px 50px;
+    /* padding: 60px 50px; */
     border-radius: 10px;
 }
 
@@ -627,10 +627,15 @@ button {
 }
 
 .image_6 {
-    width: 30%;
-    margin: 0 auto;
+    border-radius: 10px;
+    margin: 0 ;
     text-align: center;
     display: flex;
+}
+
+.image_9{
+    height: 45%;
+    width: auto;
 }
 
 .register_text {
