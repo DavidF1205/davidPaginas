@@ -1,0 +1,944 @@
+import java.io.File
+
+var jogoIniciado: Boolean = false
+var tabuleiroGlobal: Array<Array<String?>>? = null
+var nomeJogadorGlobal: String? = null
+var numLinhasGlobal: Int? = null
+var numColunasGlobal: Int? = null
+
+const val balaoVermelho = "\u001b[31mϙ\u001B[0m"
+const val balaoAzul = "\u001b[34mϙ\u001B[0m"
+
+fun verificaEspacos(nomeJogador: String): Boolean {
+    var linhas = 0
+    while (linhas < nomeJogador.length) {
+        if (nomeJogador[linhas] == ' ') {
+            return true
+        }
+        linhas++
+    }
+    return false
+}
+
+fun nomeValido(nomeJogador1: String?): Boolean {
+    if (nomeJogador1 == null) return false
+    return !(nomeJogador1.length > 12 || nomeJogador1.length <= 3 || verificaEspacos(nomeJogador1))
+}
+
+fun escolheLinhasEColunas(): Pair<Int, Int> {
+    var tabuleiroValido = false
+    var numLinhas = 0
+    var numColunas = 0
+
+    while (!tabuleiroValido) {
+        println("Numero de linhas:")
+        val inputLinhas = readlnOrNull()?.toIntOrNull()
+
+        if (inputLinhas == null || inputLinhas <= 0) {
+            println("Numero invalido")
+        } else {
+            numLinhas = inputLinhas
+
+            var colunasValidas = false
+            while (!colunasValidas) {
+                println("Numero de colunas:")
+                val inputColunas = readlnOrNull()?.toIntOrNull()
+
+                if (inputColunas == null || inputColunas < 0) {
+                    println("Numero invalido")
+                } else {
+                    numColunas = inputColunas
+                    tabuleiroValido = validaTabuleiro(numLinhas, numColunas)
+                    colunasValidas = true
+
+                    if (!tabuleiroValido) {
+                        println("Tamanho do tabuleiro invalido")
+                    }
+                }
+            }
+        }
+    }
+
+    return Pair(numLinhas, numColunas)
+}
+
+fun validaTabuleiro(numLinhas: Int, numColunas: Int): Boolean {
+    return when {
+        numLinhas == 5 && numColunas == 6 -> true
+        numLinhas == 6 && numColunas == 7 -> true
+        numLinhas == 7 && numColunas == 8 -> true
+        else -> false
+    }
+}
+
+
+
+
+fun criaTabuleiroVazio(numLinhas: Int, numColunas: Int): Array<Array<String?>> {
+    return Array(numLinhas) { arrayOfNulls<String?>(numColunas) }
+}
+
+fun criaTopoTabuleiro(numColunas: Int): String {
+    val numClTopo = numColunas * 4 - 1
+    return "╔" + "═".repeat(numClTopo) + "╗"
+}
+
+
+fun criaLegendaHorizontal(numColunas: Int): String {
+    var letra = 'A'
+    var legenda = " "
+
+    for (i in 0..<numColunas) {
+        legenda += if (i == numColunas - 1) {
+            " $letra  "
+        } else {
+            " $letra |"
+        }
+        letra++
+    }
+
+    return legenda
+}
+
+
+fun criaTabuleiro(tabuleiro: Array<Array<String?>>, mostraLegenda: Boolean = true): String {
+    val numLinhas = tabuleiro.size
+    val numColunas = tabuleiro[0].size
+
+    var resultado = ""
+
+    // Adiciona o topo
+    resultado += criaTopoTabuleiro(numColunas) + "\n"
+
+    // Adiciona as linhas do tabuleiro
+    for (linhaIndex in 0..<numLinhas) {
+        resultado += "║"
+        for (colunaIndex in 0..<numColunas) {
+            val balao = tabuleiro[linhaIndex][colunaIndex]
+            val simbolo = when (balao) {
+                balaoVermelho -> balaoVermelho
+                balaoAzul -> balaoAzul
+                "H" -> balaoVermelho
+                "C" -> balaoAzul
+                else -> " "
+            }
+            resultado += " $simbolo "
+            if (colunaIndex < numColunas - 1) {
+                resultado += "|"
+            }
+        }
+        resultado += "║"
+
+        if (linhaIndex < numLinhas - 1) {
+            resultado += "\n"
+        }
+    }
+
+    if (mostraLegenda) {
+        resultado += "\n" + criaLegendaHorizontal(numColunas)
+    }
+
+    return resultado
+}
+
+
+
+
+
+
+fun processaColuna(numColunas: Int, coluna: String?): Int? {
+    return if (coluna != null && coluna.length == 1 && coluna[0] in 'A'..'Z') {
+        val index = coluna[0] - 'A'
+        if (index in 0..<numColunas) index else null
+    } else {
+        null
+    }
+}
+
+
+fun contaBaloesLinha(tabuleiro: Array<Array<String?>>, linha: Int): Int {
+    if (linha !in tabuleiro.indices) return 0 // Linha inválida
+
+    var contador = 0
+    for (coluna in tabuleiro[linha]) {
+        if (coluna != null) contador++
+    }
+    return contador
+}
+
+
+
+fun contaBaloesColuna(tabuleiro: Array<Array<String?>>, coluna: Int): Int {
+    if (coluna !in tabuleiro[0].indices) return 0 // Coluna inválida
+
+    var contador = 0
+    for (linha in tabuleiro) {
+        if (linha[coluna] != null) contador++
+    }
+    return contador
+}
+
+fun colocaBalao(tabuleiro: Array<Array<String?>>, coluna: Int, humano: Boolean): Boolean {
+    val numLinhas = tabuleiro.size
+    val balao = if (humano) balaoVermelho else balaoAzul
+
+    // Verifica se a coluna está cheia usando contaBaloesColuna
+    if (contaBaloesColuna(tabuleiro, coluna + 1) >= numLinhas) {
+        return false
+    }
+
+    // Procurar a linha mais baixa disponível
+    for (linha in 0..<numLinhas) {
+        if (tabuleiro[linha][coluna] == null) {
+            tabuleiro[linha][coluna] = balao
+            return true
+        }
+    }
+
+    return false
+}
+
+fun eVitoriaHorizontal(tabuleiro: Array<Array<String?>>): Boolean {
+    val numLinhas = tabuleiro.size
+    val numColunas = tabuleiro[0].size
+
+    for (linha in 0..<numLinhas) {
+        var cont = 0
+        var simboloAtual: String? = null
+
+        for (col in 0..<numColunas) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) {
+                // encontrou 4 consecutivos
+                return true
+            }
+        }
+    }
+    return false
+}
+
+
+fun eVitoriaVertical(tabuleiro: Array<Array<String?>>): Boolean {
+    val numLinhas = tabuleiro.size
+    val numColunas = tabuleiro[0].size
+
+    for (col in 0..<numColunas) {
+        var cont = 0
+        var simboloAtual: String? = null
+
+        for (linha in 0..<numLinhas) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) {
+                // encontrou 4 consecutivos
+                return true
+            }
+        }
+    }
+    return false
+}
+
+
+fun eVitoriaDiagonal(tabuleiro: Array<Array<String?>>): Boolean {
+    val numLinhas = tabuleiro.size
+    val numColunas = tabuleiro[0].size
+
+    for (startLinha in 0..<numLinhas) {
+        var linha = startLinha
+        var col = 0
+        var cont = 0
+        var simboloAtual: String? = null
+
+        while (linha < numLinhas && col < numColunas) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) return true
+
+            linha++
+            col++
+        }
+    }
+
+    for (startCol in 1..<numColunas) {
+        var linha = 0
+        var col = startCol
+        var cont = 0
+        var simboloAtual: String? = null
+
+        while (linha < numLinhas && col < numColunas) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) return true
+
+            linha++
+            col++
+        }
+    }
+
+    for (startCol in 0..<numColunas) {
+        var linha = 0
+        var col = startCol
+        var cont = 0
+        var simboloAtual: String? = null
+
+        while (linha < numLinhas && col >= 0) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) return true
+
+            linha++
+            col--
+        }
+    }
+
+    for (startLinha in 1..<numLinhas) {
+        var linha = startLinha
+        var col = numColunas - 1
+        var cont = 0
+        var simboloAtual: String? = null
+
+        while (linha < numLinhas && col >= 0) {
+            val simboloCelula = tabuleiro[linha][col]
+
+            if (simboloCelula != null && simboloCelula == simboloAtual) {
+                cont++
+            } else {
+                simboloAtual = simboloCelula
+                cont = if (simboloCelula != null) 1 else 0
+            }
+
+            if (cont == 4) return true
+
+            linha++
+            col--
+        }
+    }
+
+    // se não encontrou 4 em linha em nenhuma das diagonais
+    return false
+}
+
+
+fun ganhouJogo(tabuleiro: Array<Array<String?>>): Boolean {
+    if (eVitoriaHorizontal(tabuleiro)) return true
+
+    if (eVitoriaVertical(tabuleiro)) return true
+
+    if (eVitoriaDiagonal(tabuleiro)) return true
+
+    return false
+}
+
+fun eEmpate(tabuleiro: Array<Array<String?>>): Boolean {
+
+    for (linha in tabuleiro) {
+        for (posicao in linha) {
+            if (posicao == null) {
+                return false
+            }
+        }
+    }
+
+    // é empate
+    return true
+}
+
+fun jogadaNormalComputador(tabuleiro: Array<Array<String?>>): Int {
+    val numLinhas = tabuleiro.size
+    val numColunas = tabuleiro[0].size
+
+    // percorre da esquerda pra direita
+    for (coluna in 0..<numColunas) {
+        if (tabuleiro[0][coluna] == null && contaBaloesColuna(tabuleiro, coluna) < numLinhas) {
+            return coluna
+        }
+    }
+
+    // se não encontrar espaço na primeira linha, verifica as próximas linhas
+    for (linha in 1..<numLinhas) {
+        for (coluna in 0..<numColunas) {
+            if (tabuleiro[linha][coluna] == null && contaBaloesColuna(tabuleiro, coluna + 1) < numLinhas) {
+                return coluna
+            }
+        }
+    }
+
+    // caso não haja mais espaços
+    return 0
+}
+
+
+
+
+
+// Função explodeBalao
+fun explodeBalao(tabuleiro: Array<Array<String?>>, coordenadas: Pair<Int, Int>): Boolean {
+
+    val (linha, coluna) = coordenadas
+
+    if (linha !in tabuleiro.indices || coluna !in tabuleiro[0].indices) {
+        println("Coordenadas inválidas para explosão!")
+        return false
+    }
+
+    if (tabuleiro[linha][coluna] == null) {
+        return false
+    }
+
+    tabuleiro[linha][coluna] = null
+
+    for (l in (linha + 1)..<tabuleiro.size) {
+        tabuleiro[l - 1][coluna] = tabuleiro[l][coluna]
+        tabuleiro[l][coluna] = null
+    }
+
+    return true
+}
+
+
+
+fun jogadaExplodirComputador(tabuleiro: Array<Array<String?>>): Pair<Int, Int> {
+
+    // 1.a) Verificar horizontalmente por 3 balões vermelhos consecutivos
+    for (linha in tabuleiro.indices) {
+        for (coluna in 0 until tabuleiro[linha].size - 2) {
+            if (tabuleiro[linha][coluna] == balaoVermelho &&
+                tabuleiro[linha][coluna + 1] == balaoVermelho &&
+                tabuleiro[linha][coluna + 2] == balaoVermelho
+            ) {
+                return Pair(linha, coluna)
+            }
+        }
+    }
+
+    // 1.b) Verificar verticalmente por 3 balões vermelhos consecutivos
+    for (coluna in tabuleiro[0].indices) {
+        for (linha in 0 until tabuleiro.size - 2) {
+            if (tabuleiro[linha][coluna] == balaoVermelho &&
+                tabuleiro[linha + 1][coluna] == balaoVermelho &&
+                tabuleiro[linha + 2][coluna] == balaoVermelho
+            ) {
+                return Pair(linha, coluna)
+            }
+        }
+    }
+
+    var colMelhor = -1
+    var maxBaloes = -1
+
+    for (coluna in tabuleiro[0].indices) {
+        var count = 0
+        for (linha in tabuleiro.indices) {
+            if (tabuleiro[linha][coluna] == balaoVermelho || tabuleiro[linha][coluna] == balaoAzul) {
+                count++
+            }
+        }
+
+        if (count > maxBaloes || (count == maxBaloes && coluna > colMelhor)) {
+            colMelhor = coluna
+            maxBaloes = count
+        }
+    }
+
+    if (colMelhor != -1 && maxBaloes > 0) {
+        for (linha in tabuleiro.indices) {
+            if (tabuleiro[linha][colMelhor] == balaoVermelho || tabuleiro[linha][colMelhor] == balaoAzul) {
+                return Pair(linha, colMelhor)
+            }
+        }
+    }
+
+    // Se não houver balões vermelhos ou azuis para rebentar
+    return Pair(-1, -1)
+}
+
+
+
+
+
+
+fun contaBaloesTotal(tabuleiro: Array<Array<String?>>): Int {
+    var totalBaloes = 0
+
+    // Soma os balões de cada linha corretamente
+    for (i in tabuleiro.indices) {
+        totalBaloes += contaBaloesLinha(tabuleiro, i)
+    }
+
+    return totalBaloes
+}
+
+
+fun jogo(numLinhas: Int, numColunas: Int, nomeJogador: String) {
+    val tabuleiro = criaTabuleiroVazio(numLinhas, numColunas)
+    jogoIniciado = true
+    tabuleiroGlobal = tabuleiro
+    nomeJogadorGlobal = nomeJogador
+    numLinhasGlobal = numLinhas
+    numColunasGlobal = numColunas
+
+    var empate: Boolean
+    var turnoHumano = true
+
+    println(criaTabuleiro(tabuleiro, true))
+    println()
+    while (true) {
+        empate = eEmpate(tabuleiro)
+        if (empate) {
+            println("Empate!")
+            jogoIniciado = false
+            return
+        }
+
+        if (turnoHumano) {
+            val continuar = turnoJogador(numLinhas, numColunas, nomeJogador, tabuleiro)
+            if (continuar) {
+                turnoHumano = false
+            } else {
+                return
+            }
+        } else {
+            val computadorJogou = turnoComputador(numLinhas, numColunas, tabuleiro)
+            if (computadorJogou) {
+                turnoHumano = true
+            } else {
+                return
+            }
+        }
+    }
+}
+
+
+fun turnoJogador(
+    numLinhas: Int,
+    numColunas: Int,
+    nomeJogador: String,
+    tabuleiro: Array<Array<String?>>
+): Boolean {
+    var primeiraTentativa = true
+
+    while (true) {
+        if (primeiraTentativa) {
+            println("$nomeJogador: $balaoVermelho")
+            println("Tabuleiro ${numLinhas}X${numColunas}")
+            primeiraTentativa = false
+        }
+        println("Coluna? (A..${'A' + numColunas - 1}):")
+        val input = readlnOrNull()?.trim() ?: ""
+
+        when {
+            input.equals("sair", ignoreCase = true) -> {
+                jogoIniciado = true
+                return false
+            }
+
+            input.equals("gravar", ignoreCase = true) -> {
+                println("Introduza o nome do ficheiro (ex: jogo.txt)")
+                val nomeFicheiro = readlnOrNull()?.trim().orEmpty()
+                if (nomeFicheiro.isNotEmpty()) {
+                    gravaJogo(nomeFicheiro, tabuleiro, nomeJogador)
+                    println("Tabuleiro ${numLinhas}x${numColunas} gravado com sucesso")
+                    return false
+                } else {
+                    println("Nome do ficheiro inválido.")
+                }
+            }
+
+            input.startsWith("Explodir", ignoreCase = true) -> {
+                val turnoCompleto = turnoJogadorExplodir(numLinhas, numColunas, nomeJogador, tabuleiro, input)
+                if (turnoCompleto) {
+                    return true
+                }
+            }
+
+            else -> {
+                val coluna = processaColuna(numColunas, input)
+                if (coluna != null) {
+                    val colocouBalao = colocaBalao(tabuleiro, coluna, true)
+                    println("Coluna escolhida: ${'A' + coluna}")
+                    if (colocouBalao) {
+                        val venceu = ganhouJogo(tabuleiro)
+                        println(criaTabuleiro(tabuleiro, true))
+                        println()
+                        if (venceu) {
+                            println("Parabens $nomeJogador! Ganhou!")
+                            return false
+                        }
+                        return true
+                    } else {
+                        println("Não foi possível colocar o balão. Tente outra coluna.")
+                    }
+                } else {
+                    println("Coluna invalida")
+                }
+            }
+        }
+    }
+}
+
+
+
+fun turnoJogadorExplodir(
+    numLinhas: Int,
+    numColunas: Int,
+    nomeJogador: String,
+    tabuleiro: Array<Array<String?>>,
+    input: String
+): Boolean {
+    val colunaInput = input.removePrefix("Explodir").trim()
+    val coluna = processaColuna(numColunas, colunaInput)
+
+    if (contaBaloesTotal(tabuleiro) < 2) {
+        println("Funcionalidade Explodir nao esta disponivel")
+        return false // turno fica do jogador
+    }
+
+    if (coluna == null) {
+        println("Coluna invalida")
+        return false // turno do jogador
+    }
+
+    val sucesso = explodeBalao(tabuleiro, Pair(0, coluna))
+    if (!sucesso) {
+        println("Coluna vazia")
+        return false // turno fica do jogador
+    }
+
+    println("Balao ${'A' + coluna} explodido!")
+    println(criaTabuleiro(tabuleiro, true))
+    println()
+
+    println("Prima enter para continuar. O computador ira agora explodir um dos seus baloes")
+    readlnOrNull()
+
+    val (linhaComp, colunaComp) = jogadaExplodirComputador(tabuleiro)
+    if (linhaComp >= 0 && colunaComp >= 0) {
+        val sucessoComp = explodeBalao(tabuleiro, Pair(linhaComp, colunaComp))
+        if (sucessoComp) {
+            println("Balao ${'A' + colunaComp},${linhaComp + 1} explodido pelo Computador!")
+        } else {
+            println("Erro inesperado: O computador não conseguiu explodir o balão selecionado.")
+        }
+    } else {
+        println("O computador não encontrou balões para explodir.")
+    }
+
+    println(criaTabuleiro(tabuleiro, true))
+    println()
+    println("$nomeJogador: $balaoVermelho")
+    println("Tabuleiro ${numLinhas}X${numColunas}")
+
+    return false // terminou o turno do computador
+}
+
+fun turnoComputador(
+    numLinhas: Int,
+    numColunas: Int,
+    tabuleiro: Array<Array<String?>>
+): Boolean {
+
+    println("Computador: $balaoAzul")
+    println("Tabuleiro ${numLinhas}X${numColunas}")
+
+    val coluna = jogadaNormalComputador(tabuleiro)
+    println("Coluna escolhida: ${'A' + coluna}")
+
+    val colocouBalao = colocaBalao(tabuleiro, coluna, false)
+    if (colocouBalao) {
+        val vitoria = ganhouJogo(tabuleiro)
+        println(criaTabuleiro(tabuleiro, true))
+        println()
+        if (vitoria) {
+            println("Perdeu! Ganhou o Computador.")
+            jogoIniciado = false
+            return false
+        }
+        return true
+    } else {
+        println("O computador não conseguiu colocar um balão. Tentando outra coluna...")
+        return true
+    }
+}
+
+
+
+fun gravaJogo(ficheiro: String, tabuleiro: Array<Array<String?>>, nomeJogador: String) {
+    val filePrinter = File(ficheiro).printWriter()
+
+    filePrinter.println(nomeJogador)
+
+    for (linha in tabuleiro) {
+        for (coluna in linha.indices) {
+            if (coluna != 0) filePrinter.print(",") // Adiciona vírgula entre valores
+
+            filePrinter.print(
+                when (linha[coluna]) {
+                    balaoVermelho -> "H"
+                    balaoAzul -> "C"
+                    else -> ""
+                }
+            )
+        }
+        filePrinter.println()
+    }
+    filePrinter.close()
+}
+
+fun leJogo(ficheiro: String): Pair<String, Array<Array<String?>>> {
+    val linhas = File(ficheiro).readLines()
+    if (linhas.isEmpty()) {
+        error("Ficheiro inválido ou vazio: $ficheiro")
+    }
+
+    val nomeJogador = linhas[0]
+    val tabuleiroLinhas = linhas.drop(1)
+    if (tabuleiroLinhas.isEmpty()) {
+        error("O ficheiro não contém linhas de tabuleiro.")
+    }
+
+    val numLinhas = tabuleiroLinhas.size
+    val numColunas = tabuleiroLinhas[0].split(",").size
+
+    val tabuleiro = Array(numLinhas) { arrayOfNulls<String?>(numColunas) }
+
+    for (i in tabuleiroLinhas.indices) {
+        val colunas = tabuleiroLinhas[i].split(",")
+        for (j in colunas.indices) {
+            tabuleiro[i][j] = when (colunas[j].trim()) {
+                "H" -> balaoVermelho
+                "C" -> balaoAzul
+                else -> null
+            }
+        }
+    }
+
+    return Pair(nomeJogador, tabuleiro)
+}
+
+
+fun jogoCarregado(
+    numLinhas: Int,
+    numColunas: Int,
+    nomeJogador: String,
+    tabuleiro: Array<Array<String?>>
+) {
+    println(criaTabuleiro(tabuleiro, true))
+    println()
+
+    var empate: Boolean
+    var turnoHumano = true
+
+    while (true) {
+        empate = eEmpate(tabuleiro)
+        if (empate) {
+            println("Empate!")
+            return
+        }
+
+        if (turnoHumano) {
+            val continuar = turnoJogador(numLinhas, numColunas, nomeJogador, tabuleiro)
+            if (continuar) {
+                turnoHumano = false // passa o turno para o computador
+            } else {
+                return // retorna para o menu principal
+            }
+        } else {
+            val computadorVenceu = turnoComputador(numLinhas, numColunas, tabuleiro)
+            if (computadorVenceu) {
+                return // finaliza o jogo e retorna ao menu
+            } else {
+                turnoHumano = true // passa a ser do jogador
+            }
+        }
+    }
+}
+
+
+
+fun exibirMenu() {
+    println()
+    println("1. Novo Jogo")
+    println("2. Gravar Jogo")
+    println("3. Ler Jogo")
+    println("0. Sair")
+    println()
+}
+
+fun lerOpcaoMenu(): Int? {
+    return readlnOrNull()?.toIntOrNull()
+}
+
+fun opcaoNovoJogo() {
+    val (numLinhasNovo, numColunasNovo) = escolheLinhasEColunas()
+    var nomeJogadorNovo: String?
+    do {
+        println("Nome do jogador 1:")
+        nomeJogadorNovo = readlnOrNull()?.trim()
+        if (!nomeValido(nomeJogadorNovo)) {
+            println("Nome de jogador invalido")
+        }
+    } while (!nomeValido(nomeJogadorNovo))
+
+    jogoIniciado = true
+
+    jogo(numLinhasNovo, numColunasNovo, nomeJogadorNovo!!)
+}
+
+fun opcaoGravarJogo(
+    tabuleiro: Array<Array<String?>>? = tabuleiroGlobal,
+    nomeJogador: String? = nomeJogadorGlobal,
+    numLinhas: Int? = numLinhasGlobal,
+    numColunas: Int? = numColunasGlobal
+) {
+
+    if (jogoIniciado && tabuleiro != null && nomeJogador != null && numLinhas != null && numColunas != null) {
+        println("Introduza o nome do ficheiro (ex: jogo.txt)")
+        val nomeFicheiro = readlnOrNull()?.trim() ?: ""
+        if (nomeFicheiro.isNotEmpty()) {
+            gravaJogo(nomeFicheiro, tabuleiro, nomeJogador)
+            println("Tabuleiro ${numLinhas}x${numColunas} gravado com sucesso")
+        } else {
+            println("Nome do ficheiro invalido. Tente novamente.")
+        }
+    } else {
+        println("Funcionalidade Gravar nao esta disponivel")
+        while (true) {
+            val novaOpcao = readlnOrNull()?.toIntOrNull()
+            when (novaOpcao) {
+                0 -> {
+                    opcaoSair()
+                    return
+                }
+                1 -> {
+                    opcaoNovoJogo()
+                    return
+                }
+                2 -> {
+                    opcaoGravarJogo(tabuleiro, nomeJogador, numLinhas, numColunas)
+                    return
+                }
+                3 -> {
+                    opcaoCarregarJogo()
+                    return
+                }
+                else -> {
+                    println("Opcao invalida. Por favor, tente novamente.")
+                }
+            }
+        }
+    }
+}
+
+
+fun opcaoCarregarJogo() {
+    println("Introduza o nome do ficheiro (ex: jogo.txt)")
+    val nomeFicheiro = readlnOrNull()?.trim() ?: ""
+    if (nomeFicheiro.isNotEmpty()) {
+        val (nomeJogadorCarregado, tabuleiroCarregado) = leJogo(nomeFicheiro)
+        val numLinhasCarregado = tabuleiroCarregado.size
+        val numColunasCarregado = tabuleiroCarregado[0].size
+
+        println("Tabuleiro ${numLinhasCarregado}x${numColunasCarregado} lido com sucesso!")
+        jogoCarregado(
+            numLinhasCarregado,
+            numColunasCarregado,
+            nomeJogadorCarregado,
+            tabuleiroCarregado
+        )
+    } else {
+        println("Nome do ficheiro invalido.")
+    }
+}
+
+fun opcaoSair() {
+    println("A sair...")
+    jogoIniciado = false
+    tabuleiroGlobal = null
+    nomeJogadorGlobal = null
+    numLinhasGlobal = null
+    numColunasGlobal = null
+}
+
+
+fun menu(): Boolean {
+
+    exibirMenu()
+
+    while (true) {
+        when (lerOpcaoMenu()) {
+            0 -> {
+                opcaoSair()
+                jogoIniciado = false
+                return false
+            }
+            1 -> {
+                opcaoNovoJogo()
+                jogoIniciado = true
+                return true
+            }
+            2 -> {
+                opcaoGravarJogo()
+                if (!jogoIniciado) {
+                    return false
+                }
+            }
+            3 -> {
+                opcaoCarregarJogo()
+                jogoIniciado = true
+                return true
+            }
+            else -> {
+                println("Opcao invalida. Por favor, tente novamente.")
+            }
+        }
+    }
+}
+
+
+
+
+fun main() {
+    println()
+    println("Bem-vindo ao jogo \"4 Baloes em Linha\"!")
+
+    var continuar = true
+    while (continuar) {
+        continuar = menu()
+    }
+}
