@@ -303,6 +303,7 @@ button {
     text-transform: uppercase;
     text-align: center;
     font-weight: bold;
+    text-shadow: 3px 3px 5px #265F20;
 }
 
 .banner_text {
