@@ -315,6 +315,7 @@ button {
     text-align: center;
     padding-top: 30px;
     display: block;
+    text-shadow: 3px 3px 5px #265F20;
 }
 
 .container_text{
