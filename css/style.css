@@ -1092,7 +1092,6 @@ button {
 .h2Form {
     margin: 0;
     font-size: 20px;
-    color: #333;
 }
 
 /* Email input */
@@ -1129,6 +1128,11 @@ button {
     align-items: center;
     margin-bottom: 20px;
     margin-top: -200px;
+    max-width: 120px;
+    padding: 10px; /* Adicionado para criar espaço ao redor do formulário */
+    background-color: white; /* Adicionado para tornar o fundo branco */
+    border-radius: 10px; /* Adicionado para cantos arredondados */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Adicionado para sombra */
 }
 
 .formContainerHome{
@@ -1142,6 +1146,18 @@ button {
     display:block;
     align-items: center;
     text-align: center;
+}
+
+
+.centroBotao{
+    background-color: #121212 ;
+    width: 100%;
+  
+    text-align: center;
+    align-items:center;
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
 }
 
 
