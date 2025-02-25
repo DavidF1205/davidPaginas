@@ -1129,3 +1129,101 @@ button {
     align-items: center;
     margin-bottom: 20px;
 }
+
+
+
+
+
+
+
+
+/* Let's optimise it for mobile devices */
+
+@media (max-width: 720px){
+    .btn-lg {
+      padding: .8em 3em;
+      font-size: .8em;
+    }
+    h1.heading {
+      font-size: 2em;
+    }
+    header.hero {
+      text-align: center;
+      padding-bottom: 0;
+    }
+    header.hero h1 {
+      font-size: 2em;
+      margin-top: 1.5em;
+    }
+    header.hero h3 {
+      font-size: 1.2em;
+      line-height: 1.6em;
+    }
+    ul.social-links li.label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 1em;
+    }
+    ul.social-links li a {
+      opacity: 1;
+    }
+    .testimonial {
+      padding-top: 3rem;
+    }
+    .case-study .col-md-12 {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .case-study .col-md-12 {
+      transform: translateY(0px);
+      -webkit-transform: translateY(0px);
+    }
+  
+    /*Swiper classes*/
+    .client-box.swiper-slide-next {
+      -ms-transform: scale(1);
+      -webkit-transform: scale(1);
+      transform: scale(1);
+      box-shadow: none;
+    }
+    .swiper-button-prev,
+    .swiper-button-next {
+      display: none;
+    }
+    .swiper-container {
+      padding: 4em 0em;
+    }
+    .client-box {
+      padding: 1em;
+      text-align: center;
+    }
+    .stat-box {
+      padding: 1em;
+      margin-top: 1em;
+      margin-bottom: 1em;
+    }
+    .stat-box h1 {
+      font-size: 3.6em;
+    }
+    .stat-box h3 {
+      font-size: 1.4em;
+    }
+    .contact-banner {
+      padding: 2em;
+    }
+    .contact-banner h1 {
+      font-size: 2em;
+    }
+    .footer {
+      padding: 1em 0em;
+    }
+  }
+  
+  .text-pink{
+    color: #d31f6d;
+  }
+  
+  
+  
+  
+  
