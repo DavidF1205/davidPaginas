@@ -280,6 +280,7 @@ button {
     color: #fff;
 }
 .banner_section {
+    margin-top: 15px;
     width: 100%;
     float: left;
     padding-bottom: 160px;
