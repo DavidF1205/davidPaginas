@@ -1,34 +1,3 @@
-Highlights by HTML5 UP
-html5up.net | @ajlkn
-Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+I am currently pursuing a degree in Computer Engineering at Universidade Lusófona, with expertise in software development, database management, and systems analysis. I have experience in photography and videography, having produced professional videos such as trailers and backstage footage for musicals and theater productions. Additionally, I manage social media accounts, creating engaging visual content and implementing digital strategies. I also completed a professional course in Laboratory Analysis Technician, where I gained practical experience through an internship. I am passionate about communication, traveling, and exploring new adventures to grow personally and professionally.
 
-
-Just a fun little single pager I whipped up to test out my new scroll events plugin
-(github.com/ajlkn/jquery.scrollex). Clean, simple, fully responsive, and loaded with
-all the usual pre-styled elements. Enjoy :)
-
-Demo images* courtesy of Unsplash, a radtastic collection of CC0 (public domain) images
-you can use for pretty much whatever.
-
-(* = Not included)
-
-Feedback, bug reports, and comments are not only welcome, but strongly encouraged :)
-
-AJ
-aj@lkn.io | @ajlkn
-
-PS: Not sure how to get that contact form working? Give formspree.io a try (it's awesome).
-
-
-Credits:
-
-	Demo Images:
-		Unsplash (unsplash.com)
-
-	Icons:
-		Font Awesome (fontawesome.io)
-
-	Other:
-		jQuery (jquery.com)
-		Scrollex (github.com/ajlkn/jquery.scrollex)
-		Responsive Tools (github.com/ajlkn/responsive-tools)
+Instagram: david_1.2.0.5
