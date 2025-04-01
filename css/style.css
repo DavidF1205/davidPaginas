@@ -392,7 +392,24 @@ button {
     margin-top: 40px;
 }
 
+.read_bt2 {
+    width: 160px;
+    float: left;
+    margin-left: 10px;
+    margin-top: 40px;
+}
+
 .read_bt a {
+    width: 100%;
+    float: left;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #bf3d42;
+    text-align: center;
+    padding: 10px 0px;
+    border-radius: 30px;
+}
+.read_bt2 a {
     width: 100%;
     float: left;
     font-size: 16px;
@@ -404,6 +421,11 @@ button {
 }
 
 .read_bt a:hover {
+    color: #ffffff;
+    background-color: #121212;
+}
+
+.read_bt2 a:hover {
     color: #ffffff;
     background-color: #121212;
 }
